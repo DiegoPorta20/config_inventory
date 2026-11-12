@@ -1,35 +1,25 @@
 {
   "name": "config-inventory",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
-  },
+  "version": "0.1.0",
   "private": true,
-  "packageManager": "npm@11.16.0",
-  "dependencies": {
-    "@angular/common": "^22.0.0",
-    "@angular/compiler": "^22.0.0",
-    "@angular/core": "^22.0.0",
-    "@angular/forms": "^22.0.0",
-    "@angular/platform-browser": "^22.0.0",
-    "@angular/router": "^22.0.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+  "description": "Internal back office that configures the companies using the inventory app (Angular + NestJS + MySQL)",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @config-inventory/api --filter @config-inventory/web run dev",
+    "dev:api": "pnpm --filter @config-inventory/api dev",
+    "dev:web": "pnpm --filter @config-inventory/web dev",
+    "build": "pnpm --filter @config-inventory/web build && pnpm --filter @config-inventory/api build",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "db:generate": "pnpm --filter @config-inventory/api db:generate",
+    "db:migrate": "pnpm --filter @config-inventory/api db:migrate",
+    "db:seed": "pnpm --filter @config-inventory/api db:seed"
   },
   "devDependencies": {
-    "@angular/build": "^22.0.5",
-    "@angular/cli": "^22.0.5",
-    "@angular/compiler-cli": "^22.0.0",
-    "@tailwindcss/postcss": "^4.1.12",
-    "jsdom": "^28.0.0",
-    "postcss": "^8.5.3",
-    "prettier": "^3.8.1",
-    "tailwindcss": "^4.1.12",
-    "typescript": "~6.0.2",
-    "vitest": "^4.0.8"
+    "prettier": "^3.4.2"
   }
 }

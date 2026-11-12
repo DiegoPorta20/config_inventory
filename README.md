@@ -1,59 +1,32 @@
-# ConfigInventory
+# config_inventory
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.5.
+Back office interno para configurar las empresas que usan la aplicación de inventario (`../inventory`
+web y `../inventory_mobile`). Solo el super administrador puede iniciar sesión aquí.
 
-## Development server
+Por empresa se define: nombre, logo y colores, módulos activos, permisos del personal, límite de
+usuarios, y se crea su primer administrador en inventory.
 
-To start a local development server, run:
+Monolito: API NestJS + web Angular en un solo despliegue, con su propia base de datos MySQL
+(`config_inventory`), separada de la de inventory.
 
-```bash
-ng serve
+## Primeros pasos
+
+```
+pnpm install
+cp .env.example .env     # completa DATABASE_URL, claves y SUPER_ADMIN_*
+pnpm db:migrate
+pnpm db:seed             # super admin + la empresa 'wyminer' (id 1)
+pnpm dev                 # api :3100 + web :4200
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+En PowerShell usa `pnpm.cmd` si la ejecución de scripts está bloqueada.
 
-## Code scaffolding
+## Cómo se conecta con inventory
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- inventory pide la configuración de cada empresa a `GET /api/service/companies/by-slug/:slug`
+  (cabecera `x-service-key` = `SERVICE_API_KEY`, que en inventory es `CONFIG_SERVICE_KEY`).
+- Este proyecto crea el primer administrador de una empresa llamando a
+  `POST {INVENTORY_URL}/api/internal/companies/:id/admins`
+  (cabecera `x-service-key` = `INVENTORY_INTERNAL_KEY`, que en inventory es `INTERNAL_API_KEY`).
+- El `id` de cada empresa aquí es el `company_id` que inventory guarda en sus tablas. La empresa que
+  ya existía antes del multi-empresa debe seguir siendo la de id 1 (`pnpm db:seed` la crea).
