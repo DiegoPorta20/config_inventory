@@ -9,6 +9,7 @@ import {
   type CompanyChanges,
   type NewCompany,
 } from '../application/ports/company.repository.js';
+import { normalizeConfig } from '../domain/company-config.js';
 import type { Company, CompanyStatus, CompanySummary } from '../domain/company.js';
 
 type CompanyRow = typeof companies.$inferSelect;
@@ -18,7 +19,7 @@ const toCompany = (row: CompanyRow): Company => ({
   slug: row.slug,
   name: row.name,
   status: row.status as CompanyStatus,
-  config: row.config,
+  config: normalizeConfig(row.config, row.name),
   hasLogo: row.logoDataUrl !== null,
   hasFavicon: row.faviconDataUrl !== null,
   logoDataUrl: row.logoDataUrl,
@@ -50,6 +51,7 @@ export class DrizzleCompanyRepository extends CompanyRepository {
       .orderBy(companies.name);
     return rows.map((row) => ({
       ...row,
+      config: normalizeConfig(row.config, row.name),
       status: row.status as CompanyStatus,
       hasLogo: row.hasLogo === 1,
       hasFavicon: row.hasFavicon === 1,
