@@ -31,6 +31,21 @@ export const RESERVED_SLUGS: ReadonlySet<string> = new Set([
   'public',
   'static',
   'health',
+  'dashboard',
+  'products',
+  'categories',
+  'cost-centers',
+  'movements',
+  'history',
+  'counts',
+  'reorder',
+  'imports',
+  'suppliers',
+  'equipment',
+  'users',
+  'settings',
+  'account',
+  'more',
 ]);
 
 export const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]{1,58})[a-z0-9]$/;

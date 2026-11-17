@@ -17,6 +17,30 @@ export interface CompanyConfig {
 
 const HIDDEN_BY_DEFAULT = new Set(['products.costs.view', 'products.prices.view']);
 
+export function normalizeConfig(stored: unknown, name: string): CompanyConfig {
+  const base = defaultConfig(name);
+  const raw = (stored ?? {}) as Partial<{
+    branding: Partial<CompanyBranding>;
+    modules: unknown;
+    permissions: { PERSONAL?: unknown };
+    limits: { maxUsers?: unknown };
+  }>;
+  const strings = (value: unknown, fallback: string[]): string[] =>
+    Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : fallback;
+  const maxUsers = raw.limits?.maxUsers;
+  return {
+    branding: {
+      appName: raw.branding?.appName ?? base.branding.appName,
+      tagline: raw.branding?.tagline ?? null,
+      primaryColor: raw.branding?.primaryColor ?? base.branding.primaryColor,
+      accentColor: raw.branding?.accentColor ?? base.branding.accentColor,
+    },
+    modules: strings(raw.modules, base.modules),
+    permissions: { PERSONAL: strings(raw.permissions?.PERSONAL, base.permissions.PERSONAL) },
+    limits: { maxUsers: typeof maxUsers === 'number' ? maxUsers : null },
+  };
+}
+
 /** A new company starts with every module, read-only access for staff and no user limit. */
 export function defaultConfig(name: string): CompanyConfig {
   return {
